@@ -1,3 +1,21 @@
-page-home {
+.puzle {
+    background-image: url(../assets/imgs/pikachu.jpg);
+    width: 600px;
+    height: 450px;
+}
 
+.pieza1 {
+    background-position: 0px 0px;
+}
+
+.pieza2 {
+    background-position: -600px 0px;
+}
+
+.pieza3 {
+    background-position: 0px -450px;
+}
+
+.pieza4 {
+    background-position: -600px -450px;
 }
