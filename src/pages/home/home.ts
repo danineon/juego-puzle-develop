@@ -1,141 +1,170 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage implements OnInit {
+export class HomePage {
 
   constructor(public navCtrl: NavController) {
 
   }
   ngOnInit() {
-    trocearImagen()
+    main()
+  }
+
+}
+
+let CANVAS = null
+let CONTEXT = null
+let IMAGE = new Image()
+let SCALER = 0.6
+
+let SIZE = { x: 0, y: 0, width: 0, height: 0, rows: 3, columns: 3 }
+let PIECES = []
+let SELECTED_PIECE = null
+
+function main() {
+  CANVAS = document.getElementById('canvas')
+  CONTEXT = CANVAS.getContext("2d")
+  addEventListeners()
+
+  IMAGE.src = '../assets/imgs/pikachu.jpg'
+
+  IMAGE.onload = function () {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    initializePieces(SIZE.rows, SIZE.columns)
+    //randomizePieces()
+    updateCanvas()
+
   }
 }
 
-function trocearImagen() {
+function addEventListeners() {
+  CANVAS.addEventListener("mousedown", onMouseDown)
+  CANVAS.addEventListener("mousemove", onMouseMove)
+  CANVAS.addEventListener("mouseup", onMouseUp)
+}
 
-  var startX, startY
-  var areaX, areaY
-  var posX, posY
-  var width, height
-  var cont1, cont2
-  var i, j
-  var rows, columns
-  const scale = 100
-
-  var image = new Image(),
-    canvas = <HTMLCanvasElement>document.getElementById('canvas')
-  var ctx = canvas.getContext('2d')
-
-  image.src = '../assets/imgs/pikachu.jpg'
-
-  image.onload = function () {
-
-    height = image.height
-    width = image.width
-    startX = 0
-    startY = 0
-    posX = 0
-    posY = 0
-    rows = 3
-    columns = 3
-    areaX = width / rows
-    areaY = height / columns
-    cont1 = 0
-    cont2 = 0
-
-    for (i = 0; i < columns; i++) {
-      if (cont1 != 0) {
-        startY = startY + areaY
-        posY = posY + scale + 1
-        cont1++
-      }
-      else {
-        cont1++
-      }
-      for (j = 0; j < rows; j++) {
-        if (cont2 == 3) {
-          cont2 = 0
-          startX = 0
-          posX = 0
-        }
-        if (cont2 != 0) {
-          startX = startX + areaX
-          posX = posX + scale + 1
-          cont2++
-        }
-        else {
-          cont2++
-        }
-        ctx.drawImage(image,
-          startX, startY,   // Start at 70/20 pixels from the left and the top of the image (crop),
-          areaX, areaY,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-          posX, posY,     // Place the result at 0, 0 in the canvas,
-          scale, scale); // With as width / height: 100 * 100 (scale)
-
-      }
+function onMouseDown(evt) {
+  SELECTED_PIECE = getPressedPiece(evt)
+  if (SELECTED_PIECE != null) {
+    SELECTED_PIECE.offset = {
+      x: evt.x - SELECTED_PIECE.x,
+      y: evt.y - SELECTED_PIECE.y
     }
-    /*
-    ctx.drawImage(image,
-      0, 0,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      0, 0,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      400, 0,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      101, 0,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      800, 0,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      202, 0,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      0, 300,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      0, 101,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      400, 300,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      101, 101,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      800, 300,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      202, 101,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      0, 600,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      0, 202,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      400, 600,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      101, 202,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-
-    ctx.drawImage(image,
-      800, 600,   // Start at 70/20 pixels from the left and the top of the image (crop),
-      400, 300,   // "Get" a `50 * 50` (w * h) area from the source image (crop),
-      202, 202,     // Place the result at 0, 0 in the canvas,
-      100, 100); // With as width / height: 100 * 100 (scale)
-     */
-
   }
 }
+
+function onMouseMove(evt) {
+  if (SELECTED_PIECE != null) {
+    SELECTED_PIECE.x = evt.x - SELECTED_PIECE.offset.x
+    SELECTED_PIECE.y = evt.y - SELECTED_PIECE.offset.y
+    console.log(SELECTED_PIECE.x)
+  }
+}
+
+function onMouseUp(evt) {
+  SELECTED_PIECE=null
+}
+
+function getPressedPiece(loc) {
+  for (let i = 0; i < PIECES.length; i++) {
+    if (loc.x > PIECES[i].x && loc.x < PIECES[i].x + PIECES[i].width &&
+      loc.y > PIECES[i].y && loc.y < PIECES[i].y + PIECES[i].height) {
+      //console.log(PIECES[i].x)
+      return PIECES[i]
+
+    }
+  }
+  return null
+}
+
+function handleResize() {
+  CANVAS.width = window.innerWidth
+  CANVAS.height = window.innerHeight
+
+  let resizer = SCALER * Math.min(
+    window.innerWidth / IMAGE.width,
+    window.innerHeight / IMAGE.height)
+  SIZE.width = resizer * IMAGE.width
+  SIZE.height = resizer * IMAGE.height
+  SIZE.x = window.innerWidth / 2 - SIZE.width / 2
+  SIZE.y = window.innerHeight / 2 - SIZE.height / 2
+}
+
+function updateCanvas() {
+  CONTEXT.clearRect(0, 0, CANVAS.width, CANVAS.height)
+
+  CONTEXT.globalAlpha = 0.5
+  CONTEXT.drawImage(IMAGE,
+    SIZE.x, SIZE.y,
+    SIZE.width, SIZE.height)
+  CONTEXT.globalAlpha = 1;
+
+  for (let i = 0; i < PIECES.length; i++) {
+    PIECES[i].draw(CONTEXT)
+  }
+}
+
+function initializePieces(rows, cols) {
+  SIZE.rows = rows
+  SIZE.columns = cols
+
+  PIECES = []
+  for (let i = 0; i < SIZE.rows; i++) {
+    for (let j = 0; j < SIZE.columns; j++) {
+      PIECES.push(new Piece(i, j))
+    }
+  }
+}
+
+function randomizePieces() {
+  for (let i = 0; i < PIECES.length; i++) {
+    let loc = {
+      x: Math.random() * (CANVAS.width - PIECES[i].width),
+      y: Math.random() * (CANVAS.height - PIECES[i].height)
+    }
+    PIECES[i].x = loc.x
+    PIECES[i].y = loc.y
+  }
+}
+class Piece {
+  rowIndex: number
+  colIndex: number
+  x: number
+  y: number
+  width: number
+  height: number
+
+  constructor(rowIndex, colIndex) {
+    this.rowIndex = rowIndex
+    this.colIndex = colIndex
+    this.x = SIZE.x + SIZE.width * this.colIndex / SIZE.columns
+    this.y = SIZE.y + SIZE.height * this.rowIndex / SIZE.rows
+    this.width = SIZE.width / SIZE.columns
+    this.height = SIZE.height / SIZE.rows
+  }
+  draw(context: any) {
+    context.beginPath()
+
+    context.drawImage(IMAGE,
+      this.colIndex * IMAGE.width / SIZE.columns,
+      this.rowIndex * IMAGE.height / SIZE.rows,
+      IMAGE.width / SIZE.columns,
+      IMAGE.height / SIZE.rows,
+      this.x,
+      this.y,
+      this.width,
+      this.height)
+
+    context.rect(this.x, this.y, this.width, this.height)
+    context.stroke()
+  }
+}
+
 
 
 
