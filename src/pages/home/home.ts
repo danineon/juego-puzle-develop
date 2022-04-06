@@ -23,12 +23,12 @@ let SCALER = 0.6
 
 let SIZE = { x: 0, y: 0, width: 0, height: 0, rows: 3, columns: 3 }
 let PIECES = []
-let SELECTED_PIECE = null
+/*let SELECTED_PIECE = null*/
 
 function main() {
   CANVAS = document.getElementById('canvas')
   CONTEXT = CANVAS.getContext("2d")
-  addEventListeners()
+  /*addEventListeners()*/
 
   IMAGE.src = '../assets/imgs/pikachu.jpg'
 
@@ -36,19 +36,18 @@ function main() {
     handleResize()
     window.addEventListener('resize', handleResize)
     initializePieces(SIZE.rows, SIZE.columns)
-    //randomizePieces()
+    randomizePieces()
     updateCanvas()
-
   }
 }
 
-function addEventListeners() {
+/*function addEventListeners() {
   CANVAS.addEventListener("mousedown", onMouseDown)
   CANVAS.addEventListener("mousemove", onMouseMove)
   CANVAS.addEventListener("mouseup", onMouseUp)
-}
+}*/
 
-function onMouseDown(evt) {
+/*function onMouseDown(evt) {
   SELECTED_PIECE = getPressedPiece(evt)
   if (SELECTED_PIECE != null) {
     SELECTED_PIECE.offset = {
@@ -56,21 +55,21 @@ function onMouseDown(evt) {
       y: evt.y - SELECTED_PIECE.y
     }
   }
-}
+}*/
 
-function onMouseMove(evt) {
+/*function onMouseMove(evt) {
   if (SELECTED_PIECE != null) {
     SELECTED_PIECE.x = evt.x - SELECTED_PIECE.offset.x
     SELECTED_PIECE.y = evt.y - SELECTED_PIECE.offset.y
     console.log(SELECTED_PIECE.x)
   }
-}
+}*/
 
-function onMouseUp(evt) {
+/*function onMouseUp(evt) {
   SELECTED_PIECE=null
-}
+}*/
 
-function getPressedPiece(loc) {
+/*function getPressedPiece(loc) {
   for (let i = 0; i < PIECES.length; i++) {
     if (loc.x > PIECES[i].x && loc.x < PIECES[i].x + PIECES[i].width &&
       loc.y > PIECES[i].y && loc.y < PIECES[i].y + PIECES[i].height) {
@@ -80,7 +79,7 @@ function getPressedPiece(loc) {
     }
   }
   return null
-}
+}*/
 
 function handleResize() {
   CANVAS.width = window.innerWidth
@@ -122,15 +121,14 @@ function initializePieces(rows, cols) {
 }
 
 function randomizePieces() {
-  for (let i = 0; i < PIECES.length; i++) {
-    let loc = {
-      x: Math.random() * (CANVAS.width - PIECES[i].width),
-      y: Math.random() * (CANVAS.height - PIECES[i].height)
-    }
-    PIECES[i].x = loc.x
-    PIECES[i].y = loc.y
-  }
+  for (var i = 0; i < PIECES.length; i++) {
+
+    SIZE.x = Math.floor((Math.random() *10)+1);
+    SIZE.y = Math.floor((Math.random() *400)+1);
+          
+  }  
 }
+
 class Piece {
   rowIndex: number
   colIndex: number
