@@ -1,16 +1,16 @@
-import { Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
-//commit
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController) {
 
   }
-  ngOnInit() {
+
+  ngOnInit(): void {
     main()
   }
 
@@ -35,7 +35,7 @@ function main() {
   IMAGE.onload = function () {
     handleResize()
     window.addEventListener('resize', handleResize)
-    initializePieces(SIZE.rows, SIZE.columns)
+    initializePieces()
     //randomizePieces()
     updateCanvas()
 
@@ -50,6 +50,7 @@ function addEventListeners() {
 
 function onMouseDown(evt) {
   SELECTED_PIECE = getPressedPiece(evt)
+
   if (SELECTED_PIECE != null) {
     SELECTED_PIECE.offset = {
       x: evt.x - SELECTED_PIECE.x,
@@ -62,19 +63,21 @@ function onMouseMove(evt) {
   if (SELECTED_PIECE != null) {
     SELECTED_PIECE.x = evt.x - SELECTED_PIECE.offset.x
     SELECTED_PIECE.y = evt.y - SELECTED_PIECE.offset.y
-    console.log(SELECTED_PIECE.x)
+    //console.log(SELECTED_PIECE.x)
   }
 }
 
 function onMouseUp(evt) {
-  SELECTED_PIECE=null
+  SELECTED_PIECE = null
 }
 
 function getPressedPiece(loc) {
+  console.log('MOUSE => X: ' + loc.x + '  Y: ' + loc.y);
+
   for (let i = 0; i < PIECES.length; i++) {
     if (loc.x > PIECES[i].x && loc.x < PIECES[i].x + PIECES[i].width &&
       loc.y > PIECES[i].y && loc.y < PIECES[i].y + PIECES[i].height) {
-      //console.log(PIECES[i].x)
+      //console.log('PIECE => X: ' + PIECES[i].x + '  Y: ' + PIECES[i].y);
       return PIECES[i]
 
     }
@@ -89,13 +92,17 @@ function handleResize() {
   let resizer = SCALER * Math.min(
     window.innerWidth / IMAGE.width,
     window.innerHeight / IMAGE.height)
+
   SIZE.width = resizer * IMAGE.width
   SIZE.height = resizer * IMAGE.height
   SIZE.x = window.innerWidth / 2 - SIZE.width / 2
   SIZE.y = window.innerHeight / 2 - SIZE.height / 2
+  
+
 }
 
 function updateCanvas() {
+  window.requestAnimationFrame(updateCanvas)
   CONTEXT.clearRect(0, 0, CANVAS.width, CANVAS.height)
 
   CONTEXT.globalAlpha = 0.5
@@ -109,9 +116,7 @@ function updateCanvas() {
   }
 }
 
-function initializePieces(rows, cols) {
-  SIZE.rows = rows
-  SIZE.columns = cols
+function initializePieces() {
 
   PIECES = []
   for (let i = 0; i < SIZE.rows; i++) {
@@ -159,23 +164,8 @@ class Piece {
       this.y,
       this.width,
       this.height)
-
+      
     context.rect(this.x, this.y, this.width, this.height)
     context.stroke()
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
