@@ -10,3 +10,13 @@
     color: #080404;
     font-family: arial;
 }
+
+div{
+    --offset-bottom: auto!important;
+    --overflow:hidden;
+    overflow: hidden;
+    overscroll-behavior: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

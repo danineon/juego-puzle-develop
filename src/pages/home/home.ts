@@ -17,9 +17,9 @@ export class HomePage implements OnInit {
 }
 
 let horas, minutos, segundos, hor, min, seg;
-horas=0
-minutos=0
-segundos=0
+horas = 0
+minutos = 0
+segundos = 0
 
 let CANVAS = null
 let CONTEXT = null
@@ -32,9 +32,9 @@ let SELECTED_PIECE = null
 
 function main() {
 
-hor=document.getElementById("horas");
-min=document.getElementById("minutos");
-seg=document.getElementById("segundos");
+  hor = document.getElementById("horas");
+  min = document.getElementById("minutos");
+  seg = document.getElementById("segundos");
 
   CANVAS = document.getElementById('canvas')
   CONTEXT = CANVAS.getContext("2d")
@@ -46,7 +46,7 @@ seg=document.getElementById("segundos");
     handleResize()
     window.addEventListener('resize', handleResize)
     initializePieces()
-    //randomizePieces()
+    randomizePieces()
     updateCanvas()
     tiempo()
 
@@ -57,12 +57,35 @@ function addEventListeners() {
   CANVAS.addEventListener("mousedown", onMouseDown)
   CANVAS.addEventListener("mousemove", onMouseMove)
   CANVAS.addEventListener("mouseup", onMouseUp)
+  CANVAS.addEventListener("touchstart", onTouchStart)
+  CANVAS.addEventListener("touchmove", onTouchMove)
+  CANVAS.addEventListener("touchend", onTouchEnd)
+}
+
+function onTouchStart(evt){
+  let loc = {x:evt.touches[0].clientX,
+  y:evt.touches[0].clientY}
+  onMouseDown(loc)
+}
+
+function onTouchMove(evt){
+  let loc = {x:evt.touches[0].clientX,
+  y:evt.touches[0].clientY}
+  onMouseMove(loc)
+}
+
+function onTouchEnd(){
+  onMouseUp()
 }
 
 function onMouseDown(evt) {
   SELECTED_PIECE = getPressedPiece(evt)
-
   if (SELECTED_PIECE != null) {
+    const index = PIECES.indexOf(SELECTED_PIECE)
+    if (index > -1) {
+      PIECES.splice(index, 1)
+      PIECES.push(SELECTED_PIECE)
+    }
     SELECTED_PIECE.offset = {
       x: evt.x - SELECTED_PIECE.x,
       y: evt.y - SELECTED_PIECE.y
@@ -78,16 +101,22 @@ function onMouseMove(evt) {
   }
 }
 
-function onMouseUp(evt) {
-  SELECTED_PIECE = null
+function onMouseUp() {
+  if (SELECTED_PIECE != null) {
+    if (SELECTED_PIECE.isClose()) {
+      SELECTED_PIECE.snap()
+    }
+    console.log("Entra");
+    SELECTED_PIECE = null
+  }
 }
 
 function getPressedPiece(loc) {
   console.log('MOUSE => X: ' + loc.x + '  Y: ' + loc.y);
 
-  for (let i = 0; i < PIECES.length; i++) {
+  for (let i = PIECES.length - 1; i >= 0; i--) {
     if (loc.x > PIECES[i].x && loc.x < PIECES[i].x + PIECES[i].width &&
-      loc.y > PIECES[i].y && loc.y < PIECES[i].y + PIECES[i].height) {
+      loc.y - 56 > PIECES[i].y && loc.y - 56 < PIECES[i].y + PIECES[i].height) {
       //console.log('PIECE => X: ' + PIECES[i].x + '  Y: ' + PIECES[i].y);
       return PIECES[i]
 
@@ -108,7 +137,7 @@ function handleResize() {
   SIZE.height = resizer * IMAGE.height
   SIZE.x = window.innerWidth / 2 - SIZE.width / 2
   SIZE.y = window.innerHeight / 2 - SIZE.height / 2
-  
+
 
 }
 
@@ -154,6 +183,8 @@ class Piece {
   y: number
   width: number
   height: number
+  xCorrect: number
+  yCorrect: number
 
   constructor(rowIndex, colIndex) {
     this.rowIndex = rowIndex
@@ -162,6 +193,8 @@ class Piece {
     this.y = SIZE.y + SIZE.height * this.rowIndex / SIZE.rows
     this.width = SIZE.width / SIZE.columns
     this.height = SIZE.height / SIZE.rows
+    this.xCorrect = this.x
+    this.yCorrect = this.y
   }
   draw(context: any) {
     context.beginPath()
@@ -175,40 +208,60 @@ class Piece {
       this.y,
       this.width,
       this.height)
-      
+
     context.rect(this.x, this.y, this.width, this.height)
     context.stroke()
   }
 
+  isClose() {
+    if (distance({ x: this.x, y: this.y },
+      { x: this.xCorrect, y: this.yCorrect }) < this.width / 8) {
+      return true
+    }
+    return false
+  }
+
+  snap() {
+    this.x = this.xCorrect
+    this.y = this.yCorrect
+  }
+
 }
 
-function tiempo(){
-  var contador=0;
-  window.setInterval(function(){
-      if(contador<10){
-          seg.innerHTML="0"+contador;
-      }else{
-          seg.innerHTML= contador;
-      }
-      if (contador>59){
-          segundos=0;
-          contador=0;
-          minutos=minutos+1;
-      }
-      if (minutos>59){
-          minutos=0;
-          horas=horas+1;
-      }
-      if (horas>23){
-          horas=0;
-      }
-      if (minutos<10){
-          min.innerHTML="0"+minutos;
-      }else{ min.innerHTML=minutos;}
-      if (horas<10){
-          hor.innerHTML="0"+horas;
-      }else{ hor.innerHTML=horas;}
-      contador++;
-  },1000);
+function distance(p1, p2) {
+  return Math.sqrt(
+    (p1.x - p2.x) * (p1.x - p2.x) +
+    (p1.y - p2.y) * (p1.y - p2.y)
+  );
+}
+
+function tiempo() {
+  var contador = 0;
+  window.setInterval(function () {
+    if (contador < 10) {
+      seg.innerHTML = "0" + contador;
+    } else {
+      seg.innerHTML = contador;
+    }
+    if (contador > 59) {
+      segundos = 0;
+      contador = 0;
+      minutos = minutos + 1;
+    }
+    if (minutos > 59) {
+      minutos = 0;
+      horas = horas + 1;
+    }
+    if (horas > 23) {
+      horas = 0;
+    }
+    if (minutos < 10) {
+      min.innerHTML = "0" + minutos;
+    } else { min.innerHTML = minutos; }
+    if (horas < 10) {
+      hor.innerHTML = "0" + horas;
+    } else { hor.innerHTML = horas; }
+    contador++;
+  }, 1000);
   addEventListeners()
 }
