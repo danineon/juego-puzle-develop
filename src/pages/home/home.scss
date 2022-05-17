@@ -1,22 +1,55 @@
-.tiempo{
-    position:absolute;
-    width:100%;
-    height:100%;
-    font-size: 2rem;
-    font-weight:200;
-    text-align: center;
-    margin-top: 5em;
-    padding: 1.3em;
-    color: #080404;
-    font-family: arial;
-}
-
-div{
-    --offset-bottom: auto!important;
-    --overflow:hidden;
+div {
+    --offset-bottom: auto !important;
+    --overflow: hidden;
     overflow: hidden;
     overscroll-behavior: none;
+
     &::-webkit-scrollbar {
         display: none;
     }
+
+    font-family: Arial;
+}
+
+.menuItems {
+    width: 80vmin;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(2555, 255, 255, 0.6);
+    text-align: center;
+    padding: 5vmin;
+    border: 1vmin rgba(0, 0, 0, 0.6) solid;
+    font-size: 7vmin;
+}
+
+button {
+    font-size: 7vmin;
+    background: rgb(123, 146, 196);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    border-radius: 1vmin;
+}
+
+button:hover {
+    background: orange;
+    color: black;
+}
+
+select {
+    font-size: 7vmin;
+    cursor: pointer;
+    border: none;
+    border-radius: 1vmin;
+    outline: none;
+}
+
+.time {
+    position: absolute;
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%);
 }

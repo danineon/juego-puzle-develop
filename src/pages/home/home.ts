@@ -7,34 +7,58 @@ import { NavController } from 'ionic-angular';
 export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController) {
-
   }
 
   ngOnInit(): void {
     main()
   }
 
-}
+  restart() {
+    START_TIME = new Date().getTime()
+    END_TIME = null
+    randomizePieces()
+    document.getElementById("menuItems").style.display = "none"
+  }
 
-let horas, minutos, segundos, hor, min, seg;
-horas = 0
-minutos = 0
-segundos = 0
+  setDifficulty() {
+    let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
+    switch (diff) {
+      case "easy":
+        initializePieces(3, 3)
+        break
+      case "medium":
+        initializePieces(5, 5)
+        break
+      case "hard":
+        initializePieces(10, 10)
+        break
+      case "insane":
+        initializePieces(25, 25)
+        break
+
+    }
+  }
+
+}
 
 let CANVAS = null
 let CONTEXT = null
 let IMAGE = new Image()
 let SCALER = 0.6
-
 let SIZE = { x: 0, y: 0, width: 0, height: 0, rows: 3, columns: 3 }
 let PIECES = []
 let SELECTED_PIECE = null
+let START_TIME = null
+let END_TIME = null
+let TIME = null
+
+let POP_SOUND = new Audio("../assets/sounds/pop.mp3")
+POP_SOUND.volume=0.5
+
+let COMPLETE_SOUND = new Audio("../assets/sounds/complete.mp3")
+COMPLETE_SOUND.volume=0.2
 
 function main() {
-
-  hor = document.getElementById("horas");
-  min = document.getElementById("minutos");
-  seg = document.getElementById("segundos");
 
   CANVAS = document.getElementById('canvas')
   CONTEXT = CANVAS.getContext("2d")
@@ -45,12 +69,50 @@ function main() {
   IMAGE.onload = function () {
     handleResize()
     window.addEventListener('resize', handleResize)
-    initializePieces()
-    randomizePieces()
-    updateCanvas()
-    tiempo()
+    initializePieces(3, 3)
+    //randomizePieces()
+    updateGame()
+  }
+}
+
+function updateTime() {
+  let now = new Date().getTime()
+  if (START_TIME != null) {
+    if(END_TIME!=null){
+      TIME = document.getElementById("time")
+      TIME.innerHTML = formatTime(END_TIME - START_TIME)
+    }
+    else{
+      TIME = document.getElementById("time")
+      TIME.innerHTML = formatTime(now - START_TIME)
+    }
+    //console.log(TIME);
 
   }
+}
+
+function isComplete(){
+  for(let i=0; i<PIECES.length; i++){
+    if(PIECES[i].correct==false){
+      return false
+    }
+  }
+  return true
+}
+
+function formatTime(miliseconds) {
+  let seconds = Math.floor(miliseconds / 1000)
+  let s = Math.floor(seconds % 60)
+  let m = Math.floor(seconds % (60 * 60) / 60)
+  let h = Math.floor(seconds % (60 * 60 * 24) / (60 * 60))
+
+  let formattedTime = h.toString().padStart(2, "0")
+  formattedTime += ":"
+  formattedTime += m.toString().padStart(2, "0")
+  formattedTime += ":"
+  formattedTime += s.toString().padStart(2, "0")
+
+  return formattedTime
 }
 
 function addEventListeners() {
@@ -62,19 +124,23 @@ function addEventListeners() {
   CANVAS.addEventListener("touchend", onTouchEnd)
 }
 
-function onTouchStart(evt){
-  let loc = {x:evt.touches[0].clientX,
-  y:evt.touches[0].clientY}
+function onTouchStart(evt) {
+  let loc = {
+    x: evt.touches[0].clientX,
+    y: evt.touches[0].clientY
+  }
   onMouseDown(loc)
 }
 
-function onTouchMove(evt){
-  let loc = {x:evt.touches[0].clientX,
-  y:evt.touches[0].clientY}
+function onTouchMove(evt) {
+  let loc = {
+    x: evt.touches[0].clientX,
+    y: evt.touches[0].clientY
+  }
   onMouseMove(loc)
 }
 
-function onTouchEnd(){
+function onTouchEnd() {
   onMouseUp()
 }
 
@@ -90,6 +156,7 @@ function onMouseDown(evt) {
       x: evt.x - SELECTED_PIECE.x,
       y: evt.y - SELECTED_PIECE.y
     }
+    SELECTED_PIECE.correct = false
   }
 }
 
@@ -105,8 +172,13 @@ function onMouseUp() {
   if (SELECTED_PIECE != null) {
     if (SELECTED_PIECE.isClose()) {
       SELECTED_PIECE.snap()
+      if(isComplete() && END_TIME == null){
+        let now = new Date().getTime()
+        END_TIME = now
+        COMPLETE_SOUND.play()
+      }
     }
-    console.log("Entra");
+    //console.log("Entra");
     SELECTED_PIECE = null
   }
 }
@@ -141,8 +213,7 @@ function handleResize() {
 
 }
 
-function updateCanvas() {
-  window.requestAnimationFrame(updateCanvas)
+function updateGame() {
   CONTEXT.clearRect(0, 0, CANVAS.width, CANVAS.height)
 
   CONTEXT.globalAlpha = 0.5
@@ -154,9 +225,14 @@ function updateCanvas() {
   for (let i = 0; i < PIECES.length; i++) {
     PIECES[i].draw(CONTEXT)
   }
+
+  updateTime()
+  window.requestAnimationFrame(updateGame)
 }
 
-function initializePieces() {
+function initializePieces(rows, cols) {
+  SIZE.rows = rows
+  SIZE.columns = cols
 
   PIECES = []
   for (let i = 0; i < SIZE.rows; i++) {
@@ -174,6 +250,7 @@ function randomizePieces() {
     }
     PIECES[i].x = loc.x
     PIECES[i].y = loc.y
+    PIECES[i].correct = false
   }
 }
 class Piece {
@@ -185,6 +262,7 @@ class Piece {
   height: number
   xCorrect: number
   yCorrect: number
+  correct: boolean
 
   constructor(rowIndex, colIndex) {
     this.rowIndex = rowIndex
@@ -195,6 +273,7 @@ class Piece {
     this.height = SIZE.height / SIZE.rows
     this.xCorrect = this.x
     this.yCorrect = this.y
+    this.correct = true
   }
   draw(context: any) {
     context.beginPath()
@@ -215,7 +294,7 @@ class Piece {
 
   isClose() {
     if (distance({ x: this.x, y: this.y },
-      { x: this.xCorrect, y: this.yCorrect }) < this.width / 8) {
+      { x: this.xCorrect, y: this.yCorrect }) < this.width / 6) {
       return true
     }
     return false
@@ -224,6 +303,8 @@ class Piece {
   snap() {
     this.x = this.xCorrect
     this.y = this.yCorrect
+    this.correct = true
+    POP_SOUND.play()
   }
 
 }
@@ -235,33 +316,3 @@ function distance(p1, p2) {
   );
 }
 
-function tiempo() {
-  var contador = 0;
-  window.setInterval(function () {
-    if (contador < 10) {
-      seg.innerHTML = "0" + contador;
-    } else {
-      seg.innerHTML = contador;
-    }
-    if (contador > 59) {
-      segundos = 0;
-      contador = 0;
-      minutos = minutos + 1;
-    }
-    if (minutos > 59) {
-      minutos = 0;
-      horas = horas + 1;
-    }
-    if (horas > 23) {
-      horas = 0;
-    }
-    if (minutos < 10) {
-      min.innerHTML = "0" + minutos;
-    } else { min.innerHTML = minutos; }
-    if (horas < 10) {
-      hor.innerHTML = "0" + horas;
-    } else { hor.innerHTML = horas; }
-    contador++;
-  }, 1000);
-  addEventListeners()
-}

@@ -6,19 +6,22 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content> 
-  <div class="tiempo">
-    <span id = "horas">00</span> 
-    <span>h</span>
-    <span id = "minutos">00</span>
-    <span>min</span>
-    <span id = "segundos">00</span>
-    <span>s</span>
-  </div>
-</ion-content>
-
 <ion-content>
-    <div>
-    <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
+  <div id="menuItems" class="menuItems">
+    <div id="menu">
+      <div id="controls">
+        Difficulty <select id="difficulty" (change)="setDifficulty()">
+          <option value="easy">Facil</option>
+          <option value="medium">Medio</option>
+          <option value="hard">Dificil</option>
+          <option value="insane">Muy dificil</option>
+        </select>
+        <button ion-button color="primary" (click)="restart()">Empezar</button>
+      </div>
+    </div>
+  </div>
+  <div class="time">
+    <span id="time"></span>
   </div>
 </ion-content>
