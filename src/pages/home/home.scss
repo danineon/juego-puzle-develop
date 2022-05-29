@@ -27,11 +27,12 @@ div {
 button {
     font-size: 7vmin;
     background: rgb(123, 146, 196);
-    color: white;
+    color: rgb(10, 4, 4);
     cursor: pointer;
     transition: 0.3s;
     border: none;
     border-radius: 1vmin;
+    
 }
 
 button:hover {

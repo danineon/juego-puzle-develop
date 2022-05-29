@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
 
-  constructor(public navCtrl: NavController) {
-  }
+  constructor(
+    public navCtrl: NavController,
+    public alertCtrl: AlertController
+  ) {}
 
   ngOnInit(): void {
     main()
+    
   }
 
-  restart() {
-    START_TIME = new Date().getTime()
-    END_TIME = null
-    randomizePieces()
-    document.getElementById("menuItems").style.display = "none"
-  }
 
   setDifficulty() {
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
@@ -37,6 +35,33 @@ export class HomePage implements OnInit {
         break
 
     }
+  }
+
+  restart() {
+    let alert = this.alertCtrl.create({
+      
+      title: 'Seguro que quieres reiniciar partida?',
+      buttons: [
+        { 
+          text: 'NO',
+          role: 'NO',
+          handler: () => {
+            
+          }
+        },
+        {
+          text: 'SI',
+          role: 'SI',
+          handler: () => {
+            START_TIME = new Date().getTime()
+            END_TIME = null
+            randomizePieces()
+            document.getElementById("menuItems").style.display = "none"
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
 }
