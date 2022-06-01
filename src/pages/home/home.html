@@ -17,7 +17,7 @@
   <div class="time">
     <span id="time"></span>
     <div>
-      <button class= "button" (click)="restart()" ion-button color="primary">Reiniciar</button>
+      <button class= "button" (click)="restart()" ion-button color="primary" [disabled]="isDisabled">Reiniciar</button>
     </div>
   </div>
 </ion-content>

@@ -7,6 +7,8 @@ import { NavController, AlertController } from 'ionic-angular';
 })
 export class HomePage implements OnInit {
 
+  isDisabled= true;
+
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController
@@ -19,6 +21,7 @@ export class HomePage implements OnInit {
 
 
   setDifficulty() {
+    this.isDisabled = true;
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
     switch (diff) {
       case "easy":
@@ -35,9 +38,11 @@ export class HomePage implements OnInit {
         break
 
     }
+  
   }
 
   start() {
+    this.isDisabled = false;
     START_TIME = new Date().getTime()
     END_TIME = null
     randomizePieces()
@@ -72,6 +77,7 @@ export class HomePage implements OnInit {
   }
 
 }
+
 
 let CANVAS = null
 let CONTEXT = null
