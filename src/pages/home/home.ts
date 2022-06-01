@@ -37,6 +37,13 @@ export class HomePage implements OnInit {
     }
   }
 
+  start() {
+    START_TIME = new Date().getTime()
+    END_TIME = null
+    randomizePieces()
+    document.getElementById("menuItems").style.display = "none"
+  }
+
   restart() {
     let alert = this.alertCtrl.create({
       
