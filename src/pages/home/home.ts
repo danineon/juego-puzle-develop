@@ -76,7 +76,19 @@ export class HomePage implements OnInit {
     alert.present();
   }
 
+  showAlert() {
+
+    let alert = this.alertCtrl.create({
+      title: 'INFORMACIÓN',
+      message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Solo dispondras de un intento. Buena suerte!',
+      buttons: ['OK']
+    }); alert.present();
+
+  }
+
 }
+
+
 
 
 let CANVAS = null
@@ -97,6 +109,7 @@ POP_SOUND.volume = 0.5
 
 let COMPLETE_SOUND = new Audio("../assets/sounds/complete.mp3")
 COMPLETE_SOUND.volume = 0.2
+
 
 function main() {
 
