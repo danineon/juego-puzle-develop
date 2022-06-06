@@ -8,7 +8,6 @@ import { NavController, AlertController } from 'ionic-angular';
 export class HomePage implements OnInit {
 
   isDisabled= true;
-  isDisabled2= true;
 
   constructor(
     public navCtrl: NavController,
@@ -23,8 +22,6 @@ export class HomePage implements OnInit {
 
   setDifficulty() {
     this.isDisabled = true;
-    this.isDisabled2 = true;
-
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
     switch (diff) {
       case "easy":
@@ -46,7 +43,6 @@ export class HomePage implements OnInit {
 
   start() {
     this.isDisabled = false;
-    this.isDisabled2 = false;
     START_TIME = new Date().getTime()
     END_TIME = null
     randomizePieces()
@@ -81,6 +77,7 @@ export class HomePage implements OnInit {
   }
 
   showAlert() {
+
     let alert = this.alertCtrl.create({
       title: 'INFORMACIÓN',
       message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Solo dispondras de un intento. Buena suerte!',
@@ -90,6 +87,9 @@ export class HomePage implements OnInit {
   }
 
 }
+
+
+
 
 let CANVAS = null
 let CONTEXT = null
