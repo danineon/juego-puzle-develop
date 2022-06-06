@@ -8,6 +8,8 @@ import { NavController, AlertController } from 'ionic-angular';
 export class HomePage implements OnInit {
 
   isDisabled= true;
+  isDisabled2= true;
+  isDisabled3= true;
 
   constructor(
     public navCtrl: NavController,
@@ -22,6 +24,9 @@ export class HomePage implements OnInit {
 
   setDifficulty() {
     this.isDisabled = true;
+    this.isDisabled2 = true;
+    this.isDisabled3 = true;
+
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
     switch (diff) {
       case "easy":
@@ -43,6 +48,8 @@ export class HomePage implements OnInit {
 
   start() {
     this.isDisabled = false;
+    this.isDisabled2 = false;
+    this.isDisabled3 = false;
     START_TIME = new Date().getTime()
     END_TIME = null
     randomizePieces()
@@ -77,7 +84,6 @@ export class HomePage implements OnInit {
   }
 
   showAlert() {
-
     let alert = this.alertCtrl.create({
       title: 'INFORMACIÓN',
       message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Solo dispondras de un intento. Buena suerte!',
@@ -86,10 +92,38 @@ export class HomePage implements OnInit {
 
   }
 
+  async showQuest() {
+    let alert = this.alertCtrl.create({
+      title: 'QUESTION',
+      message: 'Capital de España?',
+      buttons: [
+        {
+          text: 'Madrid',
+          role: 'Madrid',
+          handler: () => {
+            console.log('Correcto');
+          },
+        },
+        {
+          text: 'Barcelona',
+          role: 'Barcelona',
+          handler: () => {
+            console.log('Incorrecto');
+          },
+        },
+        {
+          text: 'Valencia',
+          role: 'Valencia',
+          handler: () => {
+            console.log('Incorrecto');
+          },
+        },
+      ]
+
+    }); alert.present();
+  }
+
 }
-
-
-
 
 let CANVAS = null
 let CONTEXT = null
