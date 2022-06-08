@@ -10,6 +10,7 @@ export class HomePage implements OnInit {
   isDisabled= true;
   isDisabled2= true;
   isDisabled3= true;
+  correcto= false;
 
   constructor(
     public navCtrl: NavController,
@@ -26,8 +27,10 @@ export class HomePage implements OnInit {
     this.isDisabled = true;
     this.isDisabled2 = true;
     this.isDisabled3 = true;
+    
 
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
+    SELECTED_PIECE = null;
     switch (diff) {
       case "easy":
         initializePieces(3, 3)
@@ -92,7 +95,8 @@ export class HomePage implements OnInit {
 
   }
 
-  async showQuest() {
+  showQuest() {
+    this.isDisabled3 = true;
     let alert = this.alertCtrl.create({
       title: 'QUESTION',
       message: 'Capital de España?',
@@ -101,29 +105,32 @@ export class HomePage implements OnInit {
           text: 'Madrid',
           role: 'Madrid',
           handler: () => {
-            console.log('Correcto');
+            ColocarPieza3()
           },
         },
         {
           text: 'Barcelona',
-          role: 'Barcelona',
           handler: () => {
-            console.log('Incorrecto');
+            
           },
         },
         {
           text: 'Valencia',
-          role: 'Valencia',
           handler: () => {
-            console.log('Incorrecto');
+            
           },
         },
-      ]
+      ],
+      
 
     }); alert.present();
+
+    
+    
   }
 
 }
+
 
 let CANVAS = null
 let CONTEXT = null
@@ -404,6 +411,18 @@ function initializePieces(rows, cols) {
     }
   }
 
+}
+
+/*function GetPieza(){
+  const randomElement = PIECES[Math.floor(Math.random() * PIECES.length)];
+  console.log(randomElement);
+}*/
+
+function ColocarPieza3(){
+  const randomElement = PIECES[Math.floor(Math.random() * PIECES.length)];
+  
+  PIECES[0].x = 75
+  PIECES[0].y = 249,125
 }
 
 function randomizePieces() {
