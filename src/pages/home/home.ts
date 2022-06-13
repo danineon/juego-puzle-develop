@@ -419,10 +419,19 @@ function initializePieces(rows, cols) {
 }*/
 
 function ColocarPieza3(){
+  const rdmnumber = Math.floor(Math.random() * 5);
   const randomElement = PIECES[Math.floor(Math.random() * PIECES.length)];
   
-  PIECES[0].x = 75
-  PIECES[0].y = 249,125
+  if(rdmnumber == 0){
+    PIECES[0].x = 75
+    PIECES[0].y = 249,125
+  } else if(rdmnumber == 1){
+
+  }else if(rdmnumber == 1){
+    PIECES[1].x = 75
+    PIECES[1].y = 249,125
+  }
+  
 }
 
 function randomizePieces() {
