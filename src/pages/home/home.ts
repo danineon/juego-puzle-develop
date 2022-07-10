@@ -11,6 +11,12 @@ export class HomePage implements OnInit {
   isDisabled2= true;
   isDisabled3= true;
   correcto= false;
+  ayuda = false;
+  mode_easy = false;
+  mode_medium = false;
+  mode_hard = false;
+  mode_insane = false;
+  score = 0;
 
   constructor(
     public navCtrl: NavController,
@@ -34,15 +40,19 @@ export class HomePage implements OnInit {
     switch (diff) {
       case "easy":
         initializePieces(3, 3)
+        this.mode_easy = true
         break
       case "medium":
         initializePieces(5, 5)
+        this.mode_medium = true
         break
       case "hard":
         initializePieces(10, 10)
+        this.mode_hard = true
         break
       case "insane":
         initializePieces(25, 25)
+        this.mode_insane = true
         break
 
     }
@@ -89,7 +99,7 @@ export class HomePage implements OnInit {
   showAlert() {
     let alert = this.alertCtrl.create({
       title: 'INFORMACIÓN',
-      message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Solo dispondras de un intento. Buena suerte!',
+      message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Ten en cuenta que tu puntuacion se vaera afectada si utilizas la ayuda y solo dispondras de un intento. Buena suerte!',
       buttons: ['OK']
     }); alert.present();
 
@@ -105,6 +115,7 @@ export class HomePage implements OnInit {
           text: 'Madrid',
           role: 'Madrid',
           handler: () => {
+            this.ayuda = true;
             ColocarPieza3()
           },
         },
@@ -127,6 +138,33 @@ export class HomePage implements OnInit {
 
     
     
+  }
+
+  showRes() {
+    
+    const time= Math.floor(END_TIME-START_TIME/1000);
+
+    if( this.mode_easy == true ){
+    this.score = time*0.5
+    } else if (this.mode_medium == true) {
+    this.score = time*0.7
+    } else if (this.mode_hard == true) {
+    this.score = time*0.9
+    } else if (this.mode_insane == true) {
+    this.score = time*1.2
+    }
+
+    if (this.ayuda == true) {
+      this.score -= 3
+    }
+    
+    let alert = this.alertCtrl.create({
+    title: 'Resultado de la partida',
+    message: 'La puntuacion obtenida es de'+ this.score,
+    buttons: ['Cerrar']
+    }); alert.present();
+      
+
   }
 
 }
@@ -194,6 +232,7 @@ function isComplete() {
       return false
     }
   }
+  
   return true
 }
 
@@ -279,6 +318,8 @@ function onMouseUp() {
         let now = new Date().getTime()
         END_TIME = now
         COMPLETE_SOUND.play()
+        showEndScreen();
+        
       }
     }
     //console.log("Entra");
@@ -286,7 +327,7 @@ function onMouseUp() {
   }
 }
 
-function getPressedPiece(loc) {
+/*function getPressedPiece(loc) {
 
   for (let i = PIECES.length - 1; i >= 0; i--) {
     if (loc.x > PIECES[i].x && loc.x < PIECES[i].x + PIECES[i].width &&
@@ -297,7 +338,7 @@ function getPressedPiece(loc) {
     }
   }
   return null
-}
+}*/
 
 function getPressedPieceByColor(loc, color) {
   //console.log('MOUSE => X: ' + loc.x + '  Y: ' + loc.y);
@@ -370,9 +411,12 @@ function initializePieces(rows, cols) {
       while (uniqueRandomColors.includes(color)) {
         color = getRandomColor()
       }
+
       PIECES.push(new Piece(i, j, color))
     }
   }
+
+
 
   let cnt = 0
   for (let i = 0; i < SIZE.rows; i++) {
@@ -420,7 +464,7 @@ function initializePieces(rows, cols) {
 
 function ColocarPieza3(){
   const rdmnumber = Math.floor(Math.random() * 5);
-  const randomElement = PIECES[Math.floor(Math.random() * PIECES.length)];
+  //const randomElement = PIECES[Math.floor(Math.random() * PIECES.length)];
   
   if(rdmnumber == 0){
     PIECES[0].x = 75
@@ -645,4 +689,55 @@ function distance(p1, p2) {
     (p1.y - p2.y) * (p1.y - p2.y)
   );
 }
+
+function showEndScreen() {
+  const time=Math.floor((END_TIME-START_TIME)/1000);
+  document.getElementById("scoreValue").innerHTML="Score: "+time;
+  document.getElementById("endScreen").style.display="block";
+  document.getElementById('saveBtn').innerHTML="Save";
+  document.getElementById('saveBtn').disabled=false;
+}
+
+function showMenu() {
+  document.getElementById("endScreen").style.display="none";
+  document.getElementById("menuItems").style.display="block";
+}
+
+/*function saveScores() {
+  const time=END_TIME-START_TIME;
+  const name=document.getElementById("name").value;
+  if (name=="") {
+    alert("Enter your name!");
+    return;
+  }
+  const difficulty=document.getElementById("difficulty").value;
+}
+
+function showScores(){
+  document.getElementById("endScreen").style.display="none";
+  document.getElementById("scoresScreen").style.display="block";
+  document.getElementById("scoresContainer").innerHTML="Loading...";
+  //getScores();
+}
+
+function closesScores(){
+  document.getElementById("endScreen").style.display="block";
+  document.getElementById("scoresScreen").style.display="none";
+}
+
+/*function getScores(){
+  fetch ("sever.php".then(function(response) {
+      response.json().then(function(data) {
+          console.log(data);
+      });
+  });
+
+}*/
+
+/*function formatScores(data) {
+  let html="<table style='widht:100%;text-align:center;'>";
+  html+="<tr style='bckground:rgb(123,146,196);color:white'>";
+  html+="<td></td><td><b>Easy</b></td><td><b>Time</b></td></tr>";
+
+}*/
 

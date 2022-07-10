@@ -1,7 +1,7 @@
 <ion-content>
   <canvas id="canvas"></canvas>
   <canvas id="helperCanvas" style="display: none;"></canvas>
-  <div id="menuItems" class="menuItems">
+  <div id="menuItems" class="menu">
     <div id="menu">
       <div id="controls">
         Difficulty <select id="difficulty" (change)="setDifficulty()">
@@ -14,6 +14,7 @@
       </div>
     </div>
   </div>
+
   <div class="time">
     <span id="time"></span>
     <div>
@@ -28,5 +29,22 @@
       </button>
     </div>
   </div>
+
+  <div id="endScreen" class="menu" style="display: none;">
+    <div id="scoreValue"></div>
+    <ion-input type="text" id="name" placeholder="your name"></ion-input>
+    <button class="button" ion-button (click)="saveScore()" id="saveBtn">Save</button>
+    <br>
+    <br>
+    <button onclick="showScores()">Show Scores</button>
+    <button class ="button" ion-button (click)="showMenu()">Menu</button>
+  </div>
+
+  <div id="scoresScreen" class="menu" style="display: none;">
+      <div id="scoresContainer"></div>
+      <br>
+      <button class ="button" ion-button (click)="closeScores()">Back</button>
+  </div>
   
-</ion-content>
+  
+</ion-content> 
