@@ -67,6 +67,7 @@ export class HomePage implements OnInit {
     END_TIME = null
     randomizePieces()
     document.getElementById("menuItems").style.display = "none"
+    document.getElementById("endScreen").style.display = "none"
   }
 
   restart() {
@@ -140,7 +141,7 @@ export class HomePage implements OnInit {
     
   }
 
-  showRes() {
+  /*showRes() {
     
     const time= Math.floor(END_TIME-START_TIME/1000);
 
@@ -165,7 +166,7 @@ export class HomePage implements OnInit {
     }); alert.present();
       
 
-  }
+  }*/
 
 }
 
@@ -692,15 +693,9 @@ function distance(p1, p2) {
 
 function showEndScreen() {
   const time=Math.floor((END_TIME-START_TIME)/1000);
-  document.getElementById("scoreValue").innerHTML="Score: "+time;
+  document.getElementById("scoreValue").innerHTML="Puntuacion: "+time;
   document.getElementById("endScreen").style.display="block";
-  document.getElementById('saveBtn').innerHTML="Save";
-  document.getElementById('saveBtn').disabled=false;
-}
-
-function showMenu() {
-  document.getElementById("endScreen").style.display="none";
-  document.getElementById("menuItems").style.display="block";
+  document.getElementById("time").style.display="block";
 }
 
 /*function saveScores() {
