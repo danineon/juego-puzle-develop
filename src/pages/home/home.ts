@@ -24,7 +24,32 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    main()
+
+    CANVAS = document.getElementById('canvas')
+    CONTEXT = CANVAS.getContext("2d")
+  
+    HELPER_CANVAS = document.getElementById('helperCanvas')
+    HELPER_CONTEXT = HELPER_CANVAS.getContext("2d")
+  
+    addEventListeners()
+    this.setFondo
+    addEventListeners()
+    this.setDifficulty
+    addEventListeners()
+  
+    //if (MINION == true) {
+      IMAGE.src = '../assets/imgs/minions.jpg'
+    //} else if (POKEMON == true) {
+     // IMAGE.src = '../assets/imgs/pikachu.jpg'
+   // }
+    
+  
+    IMAGE.onload = function () {
+      handleResize()
+      window.addEventListener('resize', handleResize)
+      initializePieces(SIZE.rows, SIZE.columns)
+      updateGame()
+    }
     
   }
 
@@ -38,25 +63,39 @@ export class HomePage implements OnInit {
     let diff = (<HTMLInputElement>document.getElementById('difficulty')).value
     SELECTED_PIECE = null;
     switch (diff) {
-      case "easy":
+      case "Facil":
         initializePieces(3, 3)
-        this.mode_easy = true
         break
-      case "medium":
+      case "Media":
         initializePieces(5, 5)
-        this.mode_medium = true
         break
-      case "hard":
+      case "Dificil":
         initializePieces(10, 10)
-        this.mode_hard = true
         break
-      case "insane":
+      case "Muy Dificil":
         initializePieces(25, 25)
-        this.mode_insane = true
         break
 
     }
-  
+
+  }
+
+  setFondo() {
+    this.isDisabled = true;
+    this.isDisabled2 = true;
+    this.isDisabled3 = true;
+
+    let diff = (<HTMLInputElement>document.getElementById('fondo')).value
+    SELECTED_PIECE = null;
+    switch (diff) {
+      case "Pokemon":
+        IMAGE.src = '../assets/imgs/pikachu.jpg'
+        break 
+      case "Minions":
+        IMAGE.src = '../assets/imgs/minions.jpg'
+        break
+    }
+
   }
 
   start() {
@@ -178,6 +217,8 @@ let HELPER_CANVAS = null
 let HELPER_CONTEXT = null
 let SCALER = 0.6
 let SIZE = { x: 0, y: 0, width: 0, height: 0, rows: 3, columns: 3 }
+let MINION = false
+let POKEMON = false
 let PIECES = []
 let SELECTED_PIECE = null
 let START_TIME = null
@@ -191,7 +232,7 @@ let COMPLETE_SOUND = new Audio("../assets/sounds/complete.mp3")
 COMPLETE_SOUND.volume = 0.2
 
 
-function main() {
+/*function main() {
 
   CANVAS = document.getElementById('canvas')
   CONTEXT = CANVAS.getContext("2d")
@@ -201,7 +242,12 @@ function main() {
 
   addEventListeners()
 
-  IMAGE.src = '../assets/imgs/pikachu.jpg'
+  if (MINION == true) {
+    IMAGE.src = '../assets/imgs/minions.jpg'
+  } else if (POKEMON == true) {
+    IMAGE.src = '../assets/imgs/pikachu.jpg'
+  }
+  
 
   IMAGE.onload = function () {
     handleResize()
@@ -209,7 +255,7 @@ function main() {
     initializePieces(SIZE.rows, SIZE.columns)
     updateGame()
   }
-}
+}*/
 
 function updateTime() {
   let now = new Date().getTime()
@@ -692,8 +738,14 @@ function distance(p1, p2) {
 }
 
 function showEndScreen() {
-  const time=Math.floor((END_TIME-START_TIME)/1000);
-  document.getElementById("scoreValue").innerHTML="Puntuacion: "+time;
+  let time=Math.floor((END_TIME-START_TIME)/1000);
+  if (SIZE.rows == 3 && SIZE.columns == 3) {
+    time = time*0.8 
+  } else if (SIZE.rows == 5 && SIZE.columns == 5){
+    time = time*1.2
+  }
+
+  document.getElementById("scoreValue").innerHTML="Puntuacion: "+ Math.round(time);
   document.getElementById("endScreen").style.display="block";
   document.getElementById("time").style.display="block";
 }

@@ -4,11 +4,17 @@
   <div id="menuItems" class="menu">
     <div id="menu">
       <div id="controls">
-        Difficulty <select id="difficulty" (change)="setDifficulty()">
-          <option value="easy">Facil</option>
-          <option value="medium">Medio</option>
-          <option value="hard">Dificil</option>
-          <option value="insane">Muy dificil</option>
+        Dificultad <select id="difficulty" (change)="setDifficulty()">
+          <option value="Facil">Facil</option>
+          <option value="Media">Medio</option>
+          <option value="Dificil">Dificil</option>
+          <option value="Muy Dificil">Muy dificil</option>
+        </select>
+        <br>
+        <br>
+        Imagen <select id="fondo" (change)="setFondo()">
+          <option value="Pokemon">Pokemon</option>
+          <option value="Minions">Minions</option>
         </select>
         <button ion-button color="primary" (click)="start()">Empezar</button>
       </div>
