@@ -94,6 +94,9 @@ export class HomePage implements OnInit {
       case "Minions":
         IMAGE.src = '../assets/imgs/minions.jpg'
         break
+      case "Mario Bros":
+        IMAGE.src = '../assets/imgs/mario.jpg'
+        break
     }
 
   }
