@@ -22,8 +22,9 @@
     </div>
   </div>
 
-  <div class="time">
-    <span id="time"></span>
+  <div class="time"> Tiempo:
+    <span id="time"> </span>
+    <br>
     <div>
       <button class= "button" ion-button icon-end (click)="restart()" ion-button color="primary" [disabled]="isDisabled">
         <ion-icon name="md-refresh"></ion-icon>
@@ -38,6 +39,12 @@
   </div>
 
   <div id="endScreen" class="menu" style="display: none;">
+    <strong>Resultado</strong> 
+    <div id="modo"></div>
+    <div id="tiempo"></div>
+    <div id="ayuda"></div>
+    
+    <br>
     <div id="scoreValue"></div>
     <button class ="button" ion-button (click)="start()">Reiniciar Partida</button>
   </div>

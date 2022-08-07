@@ -38,7 +38,7 @@ export class HomePage implements OnInit {
     addEventListeners()
   
     //if (MINION == true) {
-      IMAGE.src = '../assets/imgs/minions.jpg'
+     IMAGE.src = '../assets/imgs/pikachu.jpg'
     //} else if (POKEMON == true) {
      // IMAGE.src = '../assets/imgs/pikachu.jpg'
    // }
@@ -178,37 +178,8 @@ export class HomePage implements OnInit {
       
 
     }); alert.present();
-
-    
     
   }
-
-  /*showRes() {
-    
-    const time= Math.floor(END_TIME-START_TIME/1000);
-
-    if( this.mode_easy == true ){
-    this.score = time*0.5
-    } else if (this.mode_medium == true) {
-    this.score = time*0.7
-    } else if (this.mode_hard == true) {
-    this.score = time*0.9
-    } else if (this.mode_insane == true) {
-    this.score = time*1.2
-    }
-
-    if (this.ayuda == true) {
-      this.score -= 3
-    }
-    
-    let alert = this.alertCtrl.create({
-    title: 'Resultado de la partida',
-    message: 'La puntuacion obtenida es de'+ this.score,
-    buttons: ['Cerrar']
-    }); alert.present();
-      
-
-  }*/
 
 }
 
@@ -220,8 +191,6 @@ let HELPER_CANVAS = null
 let HELPER_CONTEXT = null
 let SCALER = 0.6
 let SIZE = { x: 0, y: 0, width: 0, height: 0, rows: 3, columns: 3 }
-let MINION = false
-let POKEMON = false
 let PIECES = []
 let SELECTED_PIECE = null
 let START_TIME = null
@@ -234,31 +203,6 @@ POP_SOUND.volume = 0.5
 let COMPLETE_SOUND = new Audio("../assets/sounds/complete.mp3")
 COMPLETE_SOUND.volume = 0.2
 
-
-/*function main() {
-
-  CANVAS = document.getElementById('canvas')
-  CONTEXT = CANVAS.getContext("2d")
-
-  HELPER_CANVAS = document.getElementById('helperCanvas')
-  HELPER_CONTEXT = HELPER_CANVAS.getContext("2d")
-
-  addEventListeners()
-
-  if (MINION == true) {
-    IMAGE.src = '../assets/imgs/minions.jpg'
-  } else if (POKEMON == true) {
-    IMAGE.src = '../assets/imgs/pikachu.jpg'
-  }
-  
-
-  IMAGE.onload = function () {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    initializePieces(SIZE.rows, SIZE.columns)
-    updateGame()
-  }
-}*/
 
 function updateTime() {
   let now = new Date().getTime()
@@ -465,8 +409,6 @@ function initializePieces(rows, cols) {
       PIECES.push(new Piece(i, j, color))
     }
   }
-
-
 
   let cnt = 0
   for (let i = 0; i < SIZE.rows; i++) {
@@ -741,39 +683,51 @@ function distance(p1, p2) {
 }
 
 function showEndScreen() {
-  let time=Math.floor((END_TIME-START_TIME)/1000);
+  //let time=Math.floor((END_TIME-START_TIME)/1000);
+  let puntos;
+  let ayuda;
+  let now = new Date().getTime()
+  END_TIME = now
+  let tiempo = Math.round(END_TIME-START_TIME)/1000
   if (SIZE.rows == 3 && SIZE.columns == 3) {
-    time = time*0.8 
+     puntos = 9
+     /*if (tiempo <= 40) {
+      puntos = puntos*1.2
+     }*/
   } else if (SIZE.rows == 5 && SIZE.columns == 5){
-    time = time*1.2
+    puntos = 25
+  } else if (SIZE.rows == 10 && SIZE.columns == 10) {
+    puntos = 100
+  } else if (SIZE.rows ==25 && SIZE.columns == 25) {
+    puntos = 625
   }
 
-  document.getElementById("scoreValue").innerHTML="Puntuacion: "+ Math.round(time);
+  if (ayuda == 'SI') {
+    puntos = puntos -10;
+  }
+
+  ayuda = 'NO' 
+
+  document.getElementById("modo").innerHTML="Piezas colocadas: "+ puntos;
+  document.getElementById("tiempo").innerHTML="Tiempo: "+ tiempo;
+  document.getElementById("ayuda").innerHTML="Ayuda: "+ ayuda;
+
   document.getElementById("endScreen").style.display="block";
   document.getElementById("time").style.display="block";
 }
 
-/*function saveScores() {
-  const time=END_TIME-START_TIME;
-  const name=document.getElementById("name").value;
-  if (name=="") {
-    alert("Enter your name!");
-    return;
-  }
-  const difficulty=document.getElementById("difficulty").value;
-}
 
-function showScores(){
+/*function showScores(){
   document.getElementById("endScreen").style.display="none";
   document.getElementById("scoresScreen").style.display="block";
   document.getElementById("scoresContainer").innerHTML="Loading...";
   //getScores();
-}
+}*/
 
-function closesScores(){
+/*function closesScores(){
   document.getElementById("endScreen").style.display="block";
   document.getElementById("scoresScreen").style.display="none";
-}
+}*/
 
 /*function getScores(){
   fetch ("sever.php".then(function(response) {
