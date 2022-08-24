@@ -112,8 +112,8 @@ export class HomePage implements OnInit {
     document.getElementById("endScreen").style.display = "none"
   }
 
-  restart() {
-    let alert = this.alertCtrl.create({
+  async restart() {
+    let alert = await this.alertCtrl.create({
       
       title: 'Seguro que quieres reiniciar partida?',
       buttons: [
@@ -136,21 +136,22 @@ export class HomePage implements OnInit {
         }
       ]
     });
-    alert.present();
+    await alert.present();
   }
 
-  showAlert() {
-    let alert = this.alertCtrl.create({
+  async showAlert() {
+    let alert = await this.alertCtrl.create({
       title: 'INFORMACIÓN',
       message: 'Al apretar el icono de ? se abrirá una cuestion relacionada con alguna asignatura. En el caso de contestar correctamente se colocara una pieza aleatoria en el puzzle. Ten en cuenta que tu puntuacion se vaera afectada si utilizas la ayuda y solo dispondras de un intento. Buena suerte!',
       buttons: ['OK']
-    }); alert.present();
+    }); 
+    await alert.present();
 
   }
 
-  showQuest() {
+  async showQuest() {
     this.isDisabled3 = true;
-    let alert = this.alertCtrl.create({
+    let alert = await this.alertCtrl.create({
       title: 'QUESTION',
       message: 'Capital de España?',
       buttons: [
@@ -177,7 +178,8 @@ export class HomePage implements OnInit {
       ],
       
 
-    }); alert.present();
+    }); 
+    await alert.present();
     
   }
 
